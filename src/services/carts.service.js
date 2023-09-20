@@ -108,9 +108,9 @@ export default class CartService {
                         response.message = "Producto agregado al carrito exitosamente.";
                         response.result = resultDAO.result;
                     };
-                } else if(product.result.owner === userId ){
+                } else if (product.result.owner === userId) {
                     // Si el producto pertenece al user, no se le permite agregar el producto a su carrito: 
-                    response.statusCode = 401;
+                    response.statusCode = 403;
                     response.message = "No puedes agregar tus propios productos a tu carrito.";
                 }
             };
@@ -198,51 +198,29 @@ export default class CartService {
             // Si hay un error en la creación del ticket lo devolvemos: 
             if (ticketServiceResponse.statusCode === 500) {
                 response.statusCode = 500;
-                response.message = 'Error al crear el ticket para la compra. ' + ticketServiceResponse.message;
+                response.message = ticketServiceResponse.message;
             }
             // Si el ticket se crea correctamente, continuamos: 
             else if (ticketServiceResponse.statusCode === 200) {
                 // Obtenemos el ID del ticket:
                 const ticketID = ticketServiceResponse.result._id;
                 // Enviamos el ID del carrito y el ID el ticket para agregar el ticket al carrito:
-                const addTicketResponse = await this.addTicketToCartService(cartID, ticketID);
-                // Validamos si se encontro el carrito o si hubo algun error en el proceso: 
-                if (addTicketResponse.statusCode === 404 || addTicketResponse.statusCode === 500) {
+                const resultDAO = await this.cartDao.addTicketToCart(cartID, ticketID);
+                if (resultDAO.status === "not found cart") {
+                    response.statusCode = 404;
+                    response.message = `No se encontró ningún carrito con el ID ${cartID}.`;
+                } else if (resultDAO.status === "error") {
                     response.statusCode = 500;
-                    response.message = `No se pudo agregar el ticket al carrito con el ID ${cartID}. ` + addTicketResponse.message;
-                    return response;
-                } else if (addTicketResponse.statusCode === 200) {
+                    response.message = resultDAO.message;
+                } else if (resultDAO.status === "success") {
                     response.statusCode = 200;
-                    response.message = 'Compra procesada exitosamente.';
+                    response.message = "Compra procesada exitosamente. El ticket ya ha sido agregado al carrito.";
                     response.result = ticketServiceResponse.result;
                 };
             };
         } catch (error) {
             response.statusCode = 500;
             response.message = 'Error al procesar la compra - Service: ' + error.message;
-        };
-        return response;
-    };
-
-    // Agregar un ticket a un carrito - Service:
-    async addTicketToCartService(cartID, ticketID) {
-        let response = {};
-        try {
-            const resultDAO = await this.cartDao.addTicketToCart(cartID, ticketID);
-            if (resultDAO.status === "error") {
-                response.statusCode = 500;
-                response.message = resultDAO.message;
-            } else if (resultDAO.status === "not found cart") {
-                response.statusCode = 404;
-                response.message = `No se encontró ningún carrito con el ID ${cid}.`;
-            } else if (resultDAO.status === "success") {
-                response.statusCode = 200;
-                response.message = "Ticket agregado al carrito exitosamente.";
-                response.result = resultDAO.result;
-            };
-        } catch (error) {
-            response.statusCode = 500;
-            response.message = "Error al agregar el ticket al carrito - Service: " + error.message;
         };
         return response;
     };
@@ -284,7 +262,11 @@ export default class CartService {
             } else if (resultDAO.status === "not found cart") {
                 response.statusCode = 404;
                 response.message = `No se encontró ningún carrito con el ID ${cid}.`;
-            } else if (resultDAO.status === "success") {
+            } else if (resultDAO.status === "not found prod"){
+                response.statusCode = 404;
+                response.message = `No se encontraron productos en el carrito con el ID ${cid}.`;
+            } 
+            else if (resultDAO.status === "success") {
                 response.statusCode = 200;
                 response.message = "Los productos del carrito se han eliminado exitosamente.";
                 response.result = resultDAO.result;

@@ -106,7 +106,7 @@ export default class ProductService {
                     };
                 } else {
                     // Si el user premium intenta eliminar un producto que no le pertenecer se le deniega la acción:
-                    response.statusCode = 401;
+                    response.statusCode = 403;
                     response.message = "Solo puedes eliminar los productos que te pertenecen.";
                 };
             };
@@ -141,10 +141,11 @@ export default class ProductService {
                     } else if (resultDAO.status === "success") {
                         response.statusCode = 200;
                         response.message = "Producto actualizado exitosamente.";
+                        response.result = resultDAO.result;
                     };
                 } else {
                     // Si el user premium que intenta actualizar un producto que no le pertenece se le deniega la actialización:
-                    response.statusCode = 401;
+                    response.statusCode = 403;
                     response.message = "Solo puedes modificar los productos que te pertenecen.";
                 };
             };

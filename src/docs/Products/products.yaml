@@ -1,11 +1,13 @@
 # CREDENCIALES ADMIN: 
-# email: "adminCoder@gmail.com", "password": "AdminCoder1234"
+# "email": "adminCoder@gmail.com", "password": "AdminCoder1234"
 
 # CREDENCIALES USER PREMIUM: 
 # "email": "premium@gmail.com", "password": "Premium1234"
+# cart: 65076e838c081e93102f4d52 (El usuario solo puede interactuar con su propio carrito).
 
 # CREDENCIALES: 
-# email: "user@gmail.com", "password": "User1234"
+# "email": "user@gmail.com", "password": "User1234"
+# cart: 65076f078c081e93102f4d5d (El usuario solo puede interactuar con su propio carrito).
 
 paths:
 
@@ -97,7 +99,7 @@ paths:
                 error: 'Error al crear el nuevo producto.'
                 cause: 'Una o más propiedades en los datos del producto están faltando o no son válidas.\n        Propiedades requeridas:\n        * title: Debe ser un string, se recibió Motorola - G32.\n        * description: Debe ser un string, se recibió (EL MODELO G32 DE MOTOROLA, COMBINA LA POTENCIA DE UN PROCESADOR SNAPDRAGON 680 CON 4GB DE RAM Y 128GB DE ALMACENAMIENTO INTERNO. CUENTA CON UNA PANTALLA DE 6,53” A UNA RESOLUCIÓN DE 1080X2400. Y POSEE UNA CÁMARA TRASERA PRINCIPAL DE 50MP, JUNTO CON UNA CÁMARA FRONTAL DE 8MP.).\n        * code: Debe ser un string, se recibió MotoG32.\n        * price: Debe ser un número positivo mayor que 0, se recibió 1000.\n        * stock: Debe ser un número positivo mayor que 0, se recibió 5.\n        * category: Debe ser un string, se recibió undefined.\n        * thumbnails: Debe ser un arreglo no vacío de URLs de imágenes, se recibió https://i.ibb.co/RY9T5v0/Moto-G32-P1.png,https://i.ibb.co/8XBn4pV/Moto-G32-P2.png.'
                 message: 'La información para crear el producto está incompleta o no es válida.'
-                code: 9
+                code: 8
         '401':
           description: 'ERROR: UNAUTHORIZED - No se cumplen los permisos requeridos para acceder a la ruta:'
           content:
@@ -192,7 +194,7 @@ paths:
             application/json:
               example:
                 statusCode: 404
-                message: '`No se encontraron productos. El resultado fue de 0 productos.'
+                message: 'No se encontraron productos. El resultado fue de 0 productos.'
         '500':
           description: 'ERROR: INTERNAL SERVER ERROR - Error al obtener los productos - Controller || Service || DAO: + error.message
               (Esto indica que ha ocurrido un error en la respectiva capa del módulo products, al intentar obtener los productos):'
@@ -246,7 +248,7 @@ paths:
                 error: 'Error al obtener el producto por ID.'
                 cause: 'La propiedad de ID del producto no tiene un formato válido, se recibió 6490ab6c8190cc908.'
                 message: 'El ID de producto proporcionado no es válido.'
-                code: 10
+                code: 9
         '404':
           description: 'ERROR: NOT FOUND - Producto no encontrado:'
           content: 
@@ -285,6 +287,9 @@ paths:
               example:
                 statusCode: 200
                 message: 'Producto eliminado exitosamente.'
+                result:
+                  acknowledged: true
+                  deletedCount: 1
         '400':
           description: 'ERROR: BAD REQUEST - Custom error:'
           content: 
@@ -294,24 +299,20 @@ paths:
                 error: 'Error al eliminar el producto por ID.'
                 cause: 'La propiedad de ID del producto no tiene un formato válido, se recibió 6490ab6c8190cc908.'
                 message: 'El ID de producto proporcionado no es válido.'
-                code: 10
+                code: 9
         '401':
-          description: >
-            - 'ERROR: UNAUTHORIZED - CASO 1: No se cumplen los permisos requeridos para acceder a la ruta.'
-
-            - 'ERROR: UNAUTHORIZED - CASO 2: Si el usuario premium intenta eliminar un producto que no le pertenece, se le deniega la acción.'
+          description: 'ERROR: UNAUTHORIZED - No se cumplen los permisos requeridos para acceder a la ruta:'
           content: 
             application/json:
-              examples:
-                example1:
-                  summary: 'CASO 1'
-                  value:
-                    error: 'No tienes acceso a esta ruta.'
-                example2:
-                  summary: 'CASO 2'
-                  value:
-                    statusCode: 401
-                    message: 'Solo puedes eliminar los productos que te pertenecen.'
+              example:
+                error: 'No tienes acceso a esta ruta.'
+        '403':
+          description: 'ERROR: FORBIDDEN - Si el usuario premium intenta eliminar un producto que no le pertenece, se le deniega la acción:'
+          content: 
+            application/json:
+              example:
+                statusCode: 403
+                message: 'Solo puedes eliminar los productos que te pertenecen.'
         '404':
           description: 'ERROR: NOT FOUND - Producto no encontrado:'
           content: 
@@ -322,7 +323,7 @@ paths:
         '500':
           description: > 
             - 'ERROR: INTERNAL SERVER ERROR - CASO 1: Error al obtener el producto por ID - DAO: + error.message
-              (Esto indica que ha ocurrido un error en la respectiva capa del módulo products al intentar obtener el producto).'
+              (Esto indica que ha ocurrido un error en la respectiva capa del módulo products, al intentar obtener el producto).'
             - 'ERROR: INTERNAL SERVER ERROR - CASO 2: Error al eliminar el producto - Controller || Service || DAO: + error.message (Esto indica que ha ocurrido un error en la respectiva capa del módulo products, al intentar eliminar el producto).'
           content:
             application/json:
@@ -401,6 +402,12 @@ paths:
               example:
                 statusCode: 200
                 message: 'Producto actualizado exitosamente.'
+                result:
+                  acknowledged: true
+                  modifiedCount: 0
+                  upsertedId: null
+                  upsertedCount: 0
+                  matchedCount: 1
         '400':
           description: >
             - 'ERROR: BAD REQUEST - Custom error CASO 1: El ID de producto no es válido.'
@@ -416,7 +423,7 @@ paths:
                       error: 'Error al intentar actualizar el producto.'
                       cause: 'La propiedad de ID del producto no tiene un formato válido, se recibió jn.'
                       message: 'El ID de producto proporcionado no es válido'
-                      code: 10 
+                      code: 9
                   example2:
                     summary: 'CASO 2'
                     value:
@@ -424,26 +431,22 @@ paths:
                       error: 'Error al intentar actualizar el producto.'
                       cause: 'La información del producto es incompleta o incorrecta, se recibió: {}.'
                       message: 'No se proporcionaron campos válidos para la actualización del producto.'
-                      code: 11
+                      code: 10
         '401':
-          description: >
-            - 'ERROR: UNAUTHORIZED - CASO 1: No se cumplen los permisos requeridos para acceder a la ruta.'
-
-            - 'ERROR: UNAUTHORIZED - CASO 2: Si el usuario premium intenta actualizar un producto que no le pertenece, se le deniega la acción.'
+          description: 'ERROR: UNAUTHORIZED - No se cumplen los permisos requeridos para acceder a la ruta:'
           content: 
             application/json:
-              examples:
-                  example1:
-                    summary: 'CASO 1'
-                    value:
-                      error: 'No tienes acceso a esta ruta.'
-                  example2:
-                    summary: 'CASO 2'
-                    value:
-                      statusCode: 401
-                      message: 'Solo puedes modificar los productos que te pertenecen.'
+              example:
+                error: 'No tienes acceso a esta ruta.'
+        '403':
+          description: 'ERROR: FORBIDDEN - Si el usuario premium intenta actualizar un producto que no le pertenece, se le deniega la acción:'
+          content: 
+            application/json:
+              example:
+                statusCode: 403
+                message: 'Solo puedes modificar los productos que te pertenecen.'
         '404':
-          description: 'ERROR: NOT FOUND - Producto no encontrado'
+          description: 'ERROR: NOT FOUND - Producto no encontrado:'
           content: 
             application/json:
               example:

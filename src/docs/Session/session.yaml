@@ -1,11 +1,13 @@
 # CREDENCIALES ADMIN: 
-# email: "adminCoder@gmail.com", "password": "AdminCoder1234"
+# "email": "adminCoder@gmail.com", "password": "AdminCoder1234"
 
 # CREDENCIALES USER PREMIUM: 
 # "email": "premium@gmail.com", "password": "Premium1234"
+# cart: 65076e838c081e93102f4d52 (El usuario solo puede interactuar con su propio carrito).
 
 # CREDENCIALES: 
-# email: "user@gmail.com", "password": "User1234"
+# "email": "user@gmail.com", "password": "User1234"
+# cart: 65076f078c081e93102f4d5d (El usuario solo puede interactuar con su propio carrito).
 
 paths:
 
@@ -50,7 +52,7 @@ paths:
                 error: 'Error al loguear el usuario.'
                 cause: 'Una o más propiedades en los datos del login están faltando o no son válidas.\n        Propiedades requeridas:\n        * email: Debe ser un correo electrónico válido, se recibió user@gmail.com.\n        * password: Se requiere una contraseña válida, puede ser un string, un número o una combinación de ambos.'
                 message: 'La información para el logueo está incompleta o no es válida.'
-                code: 17
+                code: 16
         '404':
           description: 'ERROR: NOT FOUND - No existe una cuenta asociada al correo indicado:'
           content: 

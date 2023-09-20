@@ -48,15 +48,15 @@ cartRouter.post('/:cid/products/:pid/quantity/:quantity', passport.authenticate(
 });
 
 // Procesamiento de la compra del usuario: 
-cartRouter.post('/:cid/purchase', passport.authenticate('jwt', { session: false }), rolesMiddlewareUser, async (req, res, next) => {
+cartRouter.post('/:cid/purchase', passport.authenticate('jwt', { session: false }), rolesMiddlewareUser, verificarPertenenciaCarrito, async (req, res, next) => {
     const result = await cartController.purchaseProductsInCartController(req, res, next);
     if(result !== undefined) {
         res.status(result.statusCode).send(result);
     };
 })
 
-// Eliminar un producto de un carrito - Router:
-cartRouter.delete('/:cid/products/:pid', passport.authenticate('jwt', { session: false }), rolesMiddlewareUser, async (req, res, next) => {
+// Eliminar un producto en carrito - Router:
+cartRouter.delete('/:cid/products/:pid', passport.authenticate('jwt', { session: false }), rolesMiddlewareUser, verificarPertenenciaCarrito, async (req, res, next) => {
     const result = await cartController.deleteProductFromCartController(req, res, next);
     if(result !== undefined) {
         res.status(result.statusCode).send(result);
@@ -64,7 +64,7 @@ cartRouter.delete('/:cid/products/:pid', passport.authenticate('jwt', { session:
 })
 
 // Eliminar todos los productos de un carrito - Router:
-cartRouter.delete('/:cid', passport.authenticate('jwt', { session: false }), rolesMiddlewareUser, async (req, res, next) => {
+cartRouter.delete('/:cid', passport.authenticate('jwt', { session: false }), rolesMiddlewareUser, verificarPertenenciaCarrito, async (req, res, next) => {
     const result = await cartController.deleteAllProductsFromCartController(req, res, next);
     if(result !== undefined) {
         res.status(result.statusCode).send(result);
@@ -80,7 +80,7 @@ cartRouter.put('/:cid', passport.authenticate('jwt', { session: false }), rolesM
 });
 
 // Actualizar la cantidad de un produco en carrito - Router:
-cartRouter.put('/:cid/products/:pid', passport.authenticate('jwt', { session: false }), rolesMiddlewareUser, async (req, res, next) => {
+cartRouter.put('/:cid/products/:pid', passport.authenticate('jwt', { session: false }), rolesMiddlewareUser, verificarPertenenciaCarrito, async (req, res, next) => {
     const result = await cartController.updateProductInCartController(req, res, next);
     if(result !== undefined) {
         res.status(result.statusCode).send(result);

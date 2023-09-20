@@ -162,9 +162,10 @@ export default class ProductController {
             response.message = resultService.message;
             if (resultService.statusCode === 500) {
                 req.logger.error(response.message);
-            } else if (resultService.statusCode === 404 || resultService.statusCode === 401) {
+            } else if (resultService.statusCode === 404 || resultService.statusCode === 403) {
                 req.logger.warn(response.message);
             } else if (resultService.statusCode === 200) {
+                response.result = resultService.result;
                 // Actualización Real Time: 
                 const products = await this.productService.getAllProductsService();
                 req.socketServer.sockets.emit('products', products.result);
@@ -214,9 +215,10 @@ export default class ProductController {
             response.message = resultService.message;
             if (resultService.statusCode === 500) {
                 req.logger.error(response.message);
-            } else if (resultService.statusCode === 404 || resultService.statusCode === 401) {
+            } else if (resultService.statusCode === 404 || resultService.statusCode === 403) {
                 req.logger.warn(response.message);
             } else if (resultService.statusCode === 200) {
+                response.result = resultService.result;
                 // Actualización Real Time: 
                 const products = await this.productService.getAllProductsService();
                 req.socketServer.sockets.emit('products', products.result);

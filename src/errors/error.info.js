@@ -7,10 +7,6 @@ export default class ErrorGenerator {
         return `La propiedad de ID de carrito no tiene un formato válido, se recibió ${cid}.`;
     }
 
-    static generateCidOrPidErrorInfo(cid, pid) {
-        return `La propiedad de ID del carrito o del producto no tiene un formato válido, se recibieron cid: ${cid}, pid: ${pid}.`;
-    }
-
     static generateQuantityErrorInfo(quantity) {
         return `La cantidad proporcionada (${quantity}) no es un número válido o es cero.`;
     }

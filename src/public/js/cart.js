@@ -219,8 +219,8 @@ function processPurchase(products) {
           cartProductID: product._id, // _id del producto en carrito
           databaseProductID: product.product._id, // _id del producto en la base de datos
           quantity: product.quantity,
-          title: product.product.title, // Título del producto
-          price: product.product.price,
+          title: product.product.title,
+          price: product.product.price
         };
       });
 
@@ -231,7 +231,7 @@ function processPurchase(products) {
         userEmailAddress
       };
 
-      // Mostrar los datos en la consola antes de enviarlos
+      // Mostrar los datos en la consola antes de enviarlos:
       console.log('Datos de compra a enviar:', purchaseData);
 
       // Enviar la información al servidor

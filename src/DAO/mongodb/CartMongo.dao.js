@@ -114,7 +114,7 @@ export default class CartsDAO {
         let response = {};
         try {
             const cart = await this.getCartById(cid);
-            if (cart.result === null) {
+            if (cart.result === undefined) {
                 response.status = "not found cart";
             } else {
                 cart.result.tickets.push({ ticketsRef: ticketID });
@@ -162,10 +162,14 @@ export default class CartsDAO {
             if (cart.result === null) {
                 response.status = "not found cart";
             } else if (cart.status === "success") {
-                cart.products = [];
-                await cart.result.save();
-                response.status = "success";
-                response.result = cart;
+                if(cart.result.products.length === 0){
+                    response.status = "not found prod";
+                } else {
+                    cart.result.products = [];
+                    await cart.result.save();
+                    response.status = "success";
+                    response.result = cart.result;
+                }
             };
         } catch (error) {
             response.status = "error";

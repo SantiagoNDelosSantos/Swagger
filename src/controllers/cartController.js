@@ -46,9 +46,9 @@ export default class CartController {
         try {
             if (!cid || !mongoose.Types.ObjectId.isValid(cid)) {
                 CustomError.createError({
-                    name: "Error al Obtener Carrito por ID.",
+                    name: "Error al obtener carrito por ID.",
                     cause: ErrorGenerator.generateCidErrorInfo(cid),
-                    message: "El ID de Carrito Proporcionado no es Válido.",
+                    message: "El ID de carrito proporcionado no es válido.",
                     code: ErrorEnums.INVALID_ID_CART_ERROR
                 });
             };
@@ -106,12 +106,12 @@ export default class CartController {
         const pid = req.params.pid;
         const quantity = req.params.quantity;
         try {
-            if (!cid || !mongoose.Types.ObjectId.isValid(cid) || !pid || !mongoose.Types.ObjectId.isValid(pid)) {
+            if (!pid || !mongoose.Types.ObjectId.isValid(pid)) {
                 CustomError.createError({
-                    name: "Error al intentar agregar un producto al carrito.",
-                    cause: ErrorGenerator.generateCidOrPidErrorInfo(cid, pid),
-                    message: "El ID de carrito o de producto no tiene un formato válido.",
-                    code: ErrorEnums.INVALID_ID_CART_OR_PRODUCT_ERROR
+                    name: "Error al obtener el producto por ID.",
+                    cause: ErrorGenerator.generatePidErrorInfo(pid),
+                    message: "El ID de producto proporcionado no es válido.",
+                    code: ErrorEnums.INVALID_ID_PRODUCT_ERROR
                 });
             } else if (!quantity || isNaN(quantity) || quantity <= 0) {
                 CustomError.createError({
@@ -134,7 +134,7 @@ export default class CartController {
             response.message = resultService.message;
             if (resultService.statusCode === 500) {
                 req.logger.error(response.message);
-            } else if (resultService.statusCode === 404 || resultService.statusCode === 401) {
+            } else if (resultService.statusCode === 404 || resultService.statusCode === 403) {
                 req.logger.warn(response.message);
             } else if (resultService.statusCode === 200) {
                 response.result = resultService.result;
@@ -155,17 +155,11 @@ export default class CartController {
         const products = purchaseInfo.products;
         const userEmail = purchaseInfo.userEmailAddress;
         try {
-            if (!cid || !mongoose.Types.ObjectId.isValid(cid)) {
+            if (!purchaseInfo || !Array.isArray(products) || products.length === 0) {
+                let purchase = JSON.stringify(purchaseInfo, null, 2)
                 CustomError.createError({
                     name: "Error al Procesar la Compra de Productos en el Carrito.",
-                    cause: ErrorGenerator.generateCidErrorInfo(cid),
-                    message: "El ID de carrito proporcionado no es válido.",
-                    code: ErrorEnums.INVALID_ID_CART_ERROR
-                });
-            } else if (!purchaseInfo || !Array.isArray(products) || products.length === 0) {
-                CustomError.createError({
-                    name: "Error al Procesar la Compra de Productos en el Carrito.",
-                    cause: ErrorGenerator.generatePurchaseErrorInfo(purchaseInfo),
+                    cause: ErrorGenerator.generatePurchaseErrorInfo(purchase),
                     message: "Información de productos inválida o faltante.",
                     code: ErrorEnums.PRODUCTS_MISSING_OR_INVALID,
                 });
@@ -198,13 +192,13 @@ export default class CartController {
             const resultService = await this.cartService.purchaseProductsInCartService(cid, purchaseInfo, userEmail);
             response.statusCode = resultService.statusCode;
             response.message = resultService.message;
-            if (resultService.statusCode === 404 || resultService.statusCode === 400) {
+            if (resultService.statusCode === 500) {
+                req.logger.error(response.message);
+            } else if (resultService.statusCode === 404) {
                 req.logger.warn(response.message);
             } else if (resultService.statusCode === 200) {
                 response.result = resultService.result;
                 req.logger.debug(response.message);
-            } else if (resultService.statusCode === 500) {
-                req.logger.error(response.message);
             };
         } catch (error) {
             response.statusCode = 500;
@@ -214,17 +208,17 @@ export default class CartController {
         return response;
     };
 
-    // Eliminar un producto de un carrito - Controller:
+    // Eliminar un producto en carrito - Controller:
     async deleteProductFromCartController(req, res, next) {
         const cid = req.params.cid;
         const pid = req.params.pid;
         try {
-            if (!cid || !mongoose.Types.ObjectId.isValid(cid) || !pid || !mongoose.Types.ObjectId.isValid(pid)) {
+            if (!pid || !mongoose.Types.ObjectId.isValid(pid)) {
                 CustomError.createError({
-                    name: "Error al intentar eliminar el producto del carrito.",
-                    cause: ErrorGenerator.generateCidOrPidErrorInfo(cid, pid),
-                    message: "El ID de carrito o de producto no tiene un formato válido.",
-                    code: ErrorEnums.INVALID_ID_CART_OR_PRODUCT_ERROR,
+                    name: "Error al obtener el producto por ID.",
+                    cause: ErrorGenerator.generatePidErrorInfo(pid),
+                    message: "El ID de producto proporcionado no es válido.",
+                    code: ErrorEnums.INVALID_ID_PRODUCT_ERROR
                 });
             };
         } catch (error) {
@@ -254,18 +248,6 @@ export default class CartController {
     // Eliminar todos los productos de un carrito - Controller:
     async deleteAllProductsFromCartController(req, res, next) {
         const cid = req.params.cid;
-        try {
-            if (!cid || !mongoose.Types.ObjectId.isValid(cid)) {
-                CustomError.createError({
-                    name: "Error al intentar eliminar todos los productos del carrito.",
-                    cause: ErrorGenerator.generateCidErrorInfo(cid),
-                    message: "El ID de Carrito Proporcionado no es Válido.",
-                    code: ErrorEnums.INVALID_ID_CART_ERROR
-                });
-            };
-        } catch (error) {
-            return next(error);
-        };
         let response = {};
         try {
             const resultService = await this.cartService.deleteAllProductFromCartService(cid);
@@ -292,14 +274,7 @@ export default class CartController {
         const cid = req.params.cid;
         const updatedCartFields = req.body;
         try {
-            if (!cid || !mongoose.Types.ObjectId.isValid(cid)) {
-                CustomError.createError({
-                    name: "Error al intentar actualizar el carrito.",
-                    cause: ErrorGenerator.generateCidErrorInfo(cid),
-                    message: "El ID de carrito proporcionado no es válido.",
-                    code: ErrorEnums.INVALID_ID_CART_ERROR
-                });
-            } else if (!updatedCartFields.products || Object.keys(updatedCartFields).length === 0) {
+            if (!updatedCartFields.products || Object.keys(updatedCartFields).length === 0) {
                 CustomError.createError({
                     name: "Error al intentar actualizar el carrito.",
                     cause: ErrorGenerator.generateUpdatedCartFieldsErrorInfo(updatedCartFields),
@@ -331,18 +306,18 @@ export default class CartController {
         return response;
     };
 
-    // Actualizar la cantidad de un produco en carrito - Controller:
+    // Actualizar la cantidad de un producto en carrito - Controller:
     async updateProductInCartController(req, res, next) {
         const cid = req.params.cid;
         const pid = req.params.pid;
         const quantity = req.body.quantity;
         try {
-            if (!cid || !mongoose.Types.ObjectId.isValid(cid) || !pid || !mongoose.Types.ObjectId.isValid(pid)) {
+            if (!pid || !mongoose.Types.ObjectId.isValid(pid)) {
                 CustomError.createError({
-                    name: "Error al intentar actualizar el producto en carrito",
-                    cause: ErrorGenerator.generateCidOrPidErrorInfo(cid, pid),
-                    message: "El ID de carrito o de producto, no tiene un formato válido.",
-                    code: ErrorEnums.INVALID_ID_CART_OR_PRODUCT_ERROR
+                    name: "Error al obtener el producto por ID.",
+                    cause: ErrorGenerator.generatePidErrorInfo(pid),
+                    message: "El ID de producto proporcionado no es válido.",
+                    code: ErrorEnums.INVALID_ID_PRODUCT_ERROR
                 });
             } else if (!quantity || !Number.isFinite(quantity) || quantity <= 0) {
                 CustomError.createError({
