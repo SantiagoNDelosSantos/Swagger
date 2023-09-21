@@ -41,7 +41,7 @@ export default class TicketService {
                 response.message = resultDAO.message;
             } else if (resultDAO.status === "not found ticket") {
                 response.statusCode = 404;
-                response.message = `No se encontro ningún ticket con el ID ${tid}.`;
+                response.message = `No se encontró ningún ticket con el ID ${tid}.`;
             } else if (resultDAO.status === "success") {
                 response.statusCode = 200;
                 response.message = "Ticket obtenido exitosamente.";

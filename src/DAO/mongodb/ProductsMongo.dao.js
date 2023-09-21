@@ -95,7 +95,7 @@ export default class ProductsDAO {
     async deleteProduct(pid) {
         let response = {};
         try {
-            let result = await productsModel.deleteOne({
+            const result = await productsModel.deleteOne({
                 _id: pid
             });
             if (result.deletedCount === 0) {
@@ -115,16 +115,16 @@ export default class ProductsDAO {
     async updateProduct(pid, updateProduct) {
         let response = {};
         try {
-            let result = await productsModel.updateOne({
-                _id: pid
-            }, {
-                $set: updateProduct
-            });
+            const result = await productsModel.updateOne({  _id: pid }, {  $set: updateProduct });
             if (result.matchedCount === 0) {
                 response.status = "not found product";
             } else if (result.matchedCount === 1) {
-                response.status = "success";
-                response.result = result;
+                if(result.modifiedCount === 0){
+                    response.status = "update is equal to current";
+                } else if (result.modifiedCount === 1) {
+                    response.status = "success";
+                    response.result = result;
+                }
             };
         } catch (error) {
             response.status = "error";

@@ -118,12 +118,12 @@ paths:
                   products:
                     - product:
                         _id: '6490ab6c8190cc908b8911b6'
-                        title: Alienware - M17
-                        description: EL MODELO M17 DE ALIENWARE, CUENTA CON UN PROCESADOR AMD RYZEN 7, UNA TARJETA GRÁFICA NVIDIA RTX 3070 TI, 16 GB DE MEMORIA RAM, UN ALMACENAMIENTO INTERNO DE 512GB Y UNA PANTALLA DE 17,30” A UNA RESOLUCIÓN DE 2560X1440.
-                        code: ALWm17
+                        title: 'Alienware - M17'
+                        description: 'EL MODELO M17 DE ALIENWARE, CUENTA CON UN PROCESADOR AMD RYZEN 7, UNA TARJETA GRÁFICA NVIDIA RTX 3070 TI, 16 GB DE MEMORIA RAM, UN ALMACENAMIENTO INTERNO DE 512GB Y UNA PANTALLA DE 17,30” A UNA RESOLUCIÓN DE 2560X1440.'
+                        code: 'ALWm17'
                         price: 300
                         stock: 0
-                        category: Laptop
+                        category: 'Laptop'
                         thumbnails:
                           - 'https://i.ibb.co/YD9XHps/Alienware-M17-P1.png'
                           - 'https://i.ibb.co/k3Lt1qh/Alienware-M17-P3.png'
@@ -135,17 +135,17 @@ paths:
                         _id: '6509384c093c16d2ae91c371'
                         successfulProducts:
                           - quantity: 1
-                            title: ASUS - VA32UQ
+                            title: 'ASUS - VA32UQ'
                             price: 299
                             _id: '6509384c093c16d2ae91c372'
                         failedProducts:
                           - quantity: 1
-                            title: Alienware - M17
+                            title: 'Alienware - M17'
                             price: 300
                             _id: '6509384c093c16d2ae91c373'
-                        purchase: user@gmail.com
+                        purchase: 'user@gmail.com'
                         amount: 299
-                        code: f0216be4-651c-4a9e-a866-51a2811ac0f8
+                        code: 'f0216be4-651c-4a9e-a866-51a2811ac0f8'
                         purchase_datetime: '2023-09-19T05:57:32.154Z'
                         __v: 0
                       _id: '6509384c093c16d2ae91c378'
@@ -166,7 +166,7 @@ paths:
             application/json:
               example:
                 statusCode: 404
-                message: 'No se encontro ningún carrito con ID 65064485f26a7d483aea37d3.'
+                message: 'No se encontró ningún carrito con ID 65064485f26a7d483aea37d3.'
         '500':
           description: 'ERROR: INTERNAL SERVER ERROR - Error al obtener el carrito por ID - Controller || Service || DAO: + error.message
               (Esto indica que ha ocurrido un error en la respectiva capa del módulo carts, al intentar obtener el carrito):'
@@ -197,9 +197,9 @@ paths:
             application/json:
               example:
                 statusCode: 200
-                message: Los productos del carrito se han eliminado exitosamente.
+                message: 'Los productos del carrito se han eliminado exitosamente.'
                 result:
-                  _id: "65076e838c081e93102f4d52"
+                  _id: '65076e838c081e93102f4d52'
                   products: []
                   tickets: []
                   __v: 16
@@ -217,7 +217,7 @@ paths:
           description: >
             - 'ERROR: UNAUTHORIZED - CASO 1: No se cumplen los permisos requeridos para acceder a la ruta.'
 
-            - 'ERROR: UNAUTHORIZED - CASO 2: El ID del carrito no pertenece al usaurio.'
+            - 'ERROR: UNAUTHORIZED - CASO 2: El ID del carrito no pertenece al usuario.'
           content: 
             application/json:
               examples:
@@ -233,7 +233,7 @@ paths:
           description: >
             - 'ERROR: NOT FOUND - CASO 1: Carrito no encontrado.'
 
-            - 'ERROR: NOT FOUND - CASO 2: El carrito ya esta vacío.'
+            - 'ERROR: NOT FOUND - CASO 2: El carrito ya está vacío.'
           content: 
             application/json:
               examples:
@@ -241,7 +241,7 @@ paths:
                     summary: 'CASO 1'
                     value:
                       statusCode: 404
-                      message: 'No se encontro ningún carrito con ID 65064485f26a7d483aea37d3.'
+                      message: 'No se encontró ningún carrito con ID 65064485f26a7d483aea37d3.'
                   example2:
                     summary: 'CASO 2'
                     value:
@@ -255,6 +255,143 @@ paths:
                 statusCode: 500
                 message: 'Error al eliminar todos los productos del carrito - Controller:  resultService is not defined'
 
+  # ACTUALIZAR UN CARRITO: 
+    put: 
+      summary: 'Actualizar un carrito (Añadir varios productos)'
+      tags:
+        - 'Carts'
+      security:
+          - cookieAuth: []
+      parameters:
+        - name: 'cid'
+          in: 'path'
+          required: true
+          description: 'ID del carrito por actualizar:'
+          schema:
+            type: 'string'
+      requestBody: 
+          required: true
+          content: 
+            application/json:
+              schema:
+                type: 'object'
+                required:
+                  - products
+                properties:
+                  products:
+                    type: 'array'
+                    items:
+                      type: 'object'
+                      properties:
+                        product:
+                          type: 'string'
+                          description: 'ID del producto.'
+                        quantity:
+                          type: 'number'
+                          description: 'Unds. del producto.'
+                      required:
+                        - product
+              example: 
+                products:
+                - product: "6490abc58190cc908b8911ba"
+                  quantity: 5
+                - product: "6490abaa8190cc908b8911b8"
+                  quantity: 7
+      responses:
+        '200':
+          description: 'Carrito actualizado exitosamente.'
+          content:
+            application/json:
+              example:
+                statusCode: 200
+                message: 'Carrito actualizado exitosamente.'
+                result:
+                  acknowledged: true
+                  modifiedCount: 1
+                  upsertedId: null
+                  upsertedCount: 0
+                  matchedCount: 1
+        '400': 
+          description: >
+            - 'ERROR: BAD REQUEST - CASO 1: El ID de carrito proporcionado no es válido.'
+
+            - 'ERROR: BAD REQUEST - CASO 2: Se intento actualizar el arreglo de tickets del carrito.'
+            
+            - 'ERROR: BAD REQUEST - CASO 3: No se proporcionó la información para actualizar el carrito.'
+
+            - 'ERROR: BAD REQUEST - CASO 4: Hay productos que no cumplen con la información requerida, para actualizar el carrito.'
+          content: 
+            application/json:
+              examples:
+                example1:
+                  summary: 'CASO 1'
+                  value: 
+                    status: 'error' 
+                    error: 'El formato del ID de carrito es incorrecto.'
+                    cause: 'La propiedad de ID de carrito no tiene un formato válido, se recibió 65076f078c081e9.'
+                    message: 'El ID de carrito proporcionado no es válido.'
+                    code: 1
+                example2:
+                  summary: 'CASO 2'
+                  value:
+                    status: 'error'
+                    error: 'Error al intentar actualizar el carrito.'
+                    cause: 'Esta ruta está diseñada exclusivamente para actualizar el contenido de un carrito al reemplazar los productos anteriores en él. No se aplica a los tickets, ya que, por cuestiones de seguridad, estos se agregan al carrito exclusivamente a través de la ruta de procesamiento de compra.'
+                    message: 'El cuerpo para el carrito, no es válido.'
+                    code: 6
+                example3:
+                  summary: 'CASO 3'
+                  value:
+                    status: 'error'
+                    error: 'Error al intentar actualizar el carrito.'
+                    cause: 'No se proporcionó ningún cuerpo products[{product}] para actualizar el carrito. Se recibió {\n  \"products\": []\n}'
+                    message: 'No se proporcionó ningún cuerpo para el carrito.'
+                    code: 7
+                example4:
+                  summary: 'CASO 4'
+                  value:
+                    status: 'error'
+                    error: 'Error al intentar actualizar el carrito.'
+                    cause: 'Uno o más productos no cumplen con la información requerida en el cuerpo de la solicitud. Verifica que todos los productos tengan su respectivo ID y quantity.'
+                    message: 'Datos de producto incompleto.'
+                    code: 7
+        '401':
+          description: >
+            - 'ERROR: UNAUTHORIZED - CASO 1: No se cumplen los permisos requeridos para acceder a la ruta.'
+
+            - 'ERROR: UNAUTHORIZED - CASO 2: El ID del carrito no pertenece al usuario.'
+          content: 
+            application/json:
+              examples:
+                  example1:
+                    summary: 'CASO 1'
+                    value:
+                      error: 'No tienes acceso a esta ruta.'
+                  example2:
+                    summary: 'CASO 2'
+                    value:
+                      error: 'Solo puedes agregar, eliminar o actualizar productos en tu propio carrito. Lo mismo aplica al procesamiento de compras y la actualización del carrito.'
+        '404':
+          description: 'ERROR: NOT FOUND - Carrito no encontrado:'
+          content: 
+            application/json:
+              example:
+                statusCode: 404
+                message: 'No se encontró ningún carrito con el ID 65075ed402344d671d2172a5.'
+        '409':
+          description: 'ERROR: CONFLICT - La información con la que se desea actualizar el carrito es igual a sus datos actuales:'
+          content: 
+            application/json:
+              example:
+                statusCode: 409
+                message: 'La actualización es igual a la versión actual de los datos del carrito con el ID 65076f078c081e93102f4d5d.'
+        '500': 
+          description: 'ERROR: INTERNAL SERVER ERROR - Error al actualizar el carrito - Controller || Service || DAO: + error.message (Esto indica que ha ocurrido un error en la respectiva capa del módulo carts, al intentar actualizar el carrito):'
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: 'Error al actualizar el carrito - Controller: resultService is not defined'
 
   '/api/carts/{cid}/products/{pid}/quantity/{quantity}':
 
@@ -291,20 +428,20 @@ paths:
             application/json:
               example:          
                 statusCode: 200
-                message: Producto agregado al carrito exitosamente.
+                message: 'Producto agregado al carrito exitosamente.'
                 result:
-                  status: success
+                  status: 'success'
                   result:
                     _id: '65076f078c081e93102f4d5d'
                     products:
                       - product:
                           _id: '6490ab6c8190cc908b8911b6'
-                          title: Alienware - M17
-                          description: EL MODELO M17 DE ALIENWARE, CUENTA CON UN PROCESADOR AMD RYZEN 7, UNA TARJETA GRÁFICA NVIDIA RTX 3070 TI, 16 GB DE MEMORIA RAM, UN ALMACENAMIENTO INTERNO DE 512GB Y UNA PANTALLA DE 17,30” A UNA RESOLUCIÓN DE 2560X1440.
-                          code: ALWm17
+                          title: 'Alienware - M17'
+                          description: 'EL MODELO M17 DE ALIENWARE, CUENTA CON UN PROCESADOR AMD RYZEN 7, UNA TARJETA GRÁFICA NVIDIA RTX 3070 TI, 16 GB DE MEMORIA RAM, UN ALMACENAMIENTO INTERNO DE 512GB Y UNA PANTALLA DE 17,30” A UNA RESOLUCIÓN DE 2560X1440.'
+                          code: 'ALWm17'
                           price: 300
                           stock: 0
-                          category: Laptop
+                          category: 'Laptop'
                           thumbnails:
                             - 'https://i.ibb.co/YD9XHps/Alienware-M17-P1.png'
                             - 'https://i.ibb.co/k3Lt1qh/Alienware-M17-P3.png'
@@ -316,17 +453,17 @@ paths:
                           _id: '6509384c093c16d2ae91c371'
                           successfulProducts:
                             - quantity: 1
-                              title: ASUS - VA32UQ
+                              title: 'ASUS - VA32UQ'
                               price: 299
                               _id: '6509384c093c16d2ae91c372'
                           failedProducts:
                             - quantity: 1
-                              title: Alienware - M17
+                              title: 'Alienware - M17'
                               price: 300
                               _id: '6509384c093c16d2ae91c373'
-                          purchase: user@gmail.com
+                          purchase: 'user@gmail.com'
                           amount: 299
-                          code: f0216be4-651c-4a9e-a866-51a2811ac0f8
+                          code: 'f0216be4-651c-4a9e-a866-51a2811ac0f8'
                           purchase_datetime: '2023-09-19T05:57:32.154Z'
                           __v: 0
                         _id: '6509384c093c16d2ae91c378'
@@ -356,7 +493,7 @@ paths:
                       error: 'Error al obtener el producto por ID.'
                       cause: 'La propiedad de ID del producto no tiene un formato válido, se recibió 6490ab6c8190cc908b.'
                       message: 'El ID de producto proporcionado no es válido.'
-                      code: 9
+                      code: 10
                   example3:
                     summary: 'CASO 3'
                     value:
@@ -369,7 +506,7 @@ paths:
           description: >
             - 'ERROR: UNAUTHORIZED - CASO 1: No se cumplen los permisos requeridos para acceder a la ruta.'
 
-            - 'ERROR: UNAUTHORIZED - CASO 2: El ID del carrito no pertenece al usaurio.'
+            - 'ERROR: UNAUTHORIZED - CASO 2: El ID del carrito no pertenece al usuario.'
           content: 
             application/json:
               examples:
@@ -382,7 +519,7 @@ paths:
                     value:
                       error: 'Solo puedes agregar, eliminar o actualizar productos en tu propio carrito. Lo mismo aplica al procesamiento de compras y la actualización del carrito.'
         '403':
-          description: 'ERROR: FORBIDDEN - Los users premium no pueden comprarse sus propios prductos:'
+          description: 'ERROR: FORBIDDEN - Los users premium no pueden comprarse sus propios productos:'
           content: 
             application/json:
               example:
@@ -400,12 +537,12 @@ paths:
                     summary: 'CASO 1'
                     value:
                       statusCode: 404
-                      message: 'No se encontro ningún producto con el ID 65075e9e02344d671d21729d.'
+                      message: 'No se encontró ningún producto con el ID 65075e9e02344d671d21729d.'
                   example2:
                     summary: 'CASO 2'
                     value:
                       statusCode: 404
-                      message: 'No se encontro ningún carrito con ID 6504e0ee262a1f12387c5640.'
+                      message: 'No se encontró ningún carrito con ID 6504e0ee262a1f12387c5640.'
         '500':
           description: >
             - 'ERROR: INTERNAL SERVER ERROR - CASO 1: Error al obtener el producto por ID - Service || DAO: + error.message (Esto indica que ha ocurrido un error en la respectiva capa del módulo products, al intentar obtener el producto).'
@@ -427,7 +564,7 @@ paths:
 
   '/api/carts/{cid}/purchase':
 
-    # PROCESAMIENTO DE COMPRA: 
+  # PROCESAMIENTO DE COMPRA: 
     post:
       summary: 'Procesar una compra'
       tags:
@@ -553,7 +690,7 @@ paths:
           description: >
             - 'ERROR: UNAUTHORIZED - CASO 1: No se cumplen los permisos requeridos para acceder a la ruta.'
 
-            - 'ERROR: UNAUTHORIZED - CASO 2: El ID del carrito no pertenece al usaurio.'
+            - 'ERROR: UNAUTHORIZED - CASO 2: El ID del carrito no pertenece al usuario.'
           content: 
             application/json:
               examples:
@@ -600,7 +737,7 @@ paths:
 
   '/api/carts/{cid}/products/{pid}':
 
-    # ELIMINAR UN PRODUCTO EN CARRITO:  
+  # ELIMINAR UN PRODUCTO EN CARRITO:  
     delete:
       summary: 'Eliminar un producto en carrito'
       tags: 
@@ -627,9 +764,9 @@ paths:
             application/json:
               example:
                 statusCode: 200
-                message: Producto eliminado exitosamente.
+                message: 'Producto eliminado exitosamente.'
                 result:
-                  status: success
+                  status: 'success'
                   result:
                     _id: "65076e838c081e93102f4d52"
                     products: []
@@ -658,12 +795,12 @@ paths:
                       error: 'Error al obtener el producto por ID.'
                       cause: 'La propiedad de ID del producto no tiene un formato válido, se recibió 6490ab6c8190cc908b.'
                       message: 'El ID de producto proporcionado no es válido.'
-                      code: 9
+                      code: 10
         '401':
           description: >
             - 'ERROR: UNAUTHORIZED - CASO 1: No se cumplen los permisos requeridos para acceder a la ruta.'
 
-            - 'ERROR: UNAUTHORIZED - CASO 2: El ID del carrito no pertenece al usaurio.'
+            - 'ERROR: UNAUTHORIZED - CASO 2: El ID del carrito no pertenece al usuario.'
           content: 
             application/json:
               examples:
@@ -701,10 +838,154 @@ paths:
                 statusCode: 500
                 message: 'Error al borrar el producto en carrito - Controller: resultService is not defined'
 
+    # ACTUALIZAR LA CANTIDAD DE UN PRODUCTO EN CARRITO: 
+    put:
+      summary: 'Actualizar la cantidad de un producto en carrito'
+      tags: 
+        - 'Carts'
+      security:
+        - cookieAuth: []
+      parameters:
+      - name: 'cid'
+        in: 'path'
+        required: true
+        description: 'ID del carrito donde se desea actualizar el producto:'
+        schema:
+          type: 'string'
+      - name: 'pid'
+        in: 'path'
+        required: true
+        description: 'ID que el producto tiene dentro del carrito:'
+        schema:
+          type: 'string'
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - quantity
+                properties:
+                  quantity:
+                    type: number
+                    description: 'Las unidades que desea poner al producto.'
+              example: 
+                quantity: 12
+      responses:
+        '200':
+          description: 'SUCCESS - Quantity del producto en carrito, actualizado exitosamente:'
+          content:
+            application/json:
+              schema:
+                type: 'object'
+                properties:
+                  statusCode:
+                    type: 'number'
+                  message:
+                    type: 'string'
+                  result:
+                    type: 'object'
+                    properties:
+                      productId:
+                        type: 'string'
+                        description: 'ID del producto actualizado.'
+                      newQuantity:
+                        type: 'number'
+                        description: 'Nueva cantidad del producto actualizado.'
+              example:
+                statusCode: 200
+                message: 'Producto actualizado exitosamente.'
+                result:
+                  productId: "650bbe804481d4a834b0eaff"
+                  newQuantity: 7
+        '400':
+          description: >
+            - 'ERROR: BAD REQUEST - Custom error CASO 1: EL ID del carrito no es válido.'
+
+            - 'ERROR: BAD REQUEST - Custom error CASO 2: El ID de producto no es válido.'
+
+            - 'ERROR: BAD REQUEST - Custom error CASO 3: El quantity no es válido.'
+          content: 
+            application/json:
+              examples:
+                  example1:
+                    summary: 'CASO 1'
+                    value:
+                      status: 'error'
+                      error: 'El formato del ID de carrito es incorrecto.'
+                      cause: 'La propiedad de ID de carrito no tiene un formato válido, se recibió 45645hj.'
+                      message: 'El ID de carrito proporcionado no es válido.'
+                      code: 1
+                  example2:
+                    summary: 'CASO 2'
+                    value:
+                      status: 'error'
+                      error: 'Error al obtener el producto por ID.'
+                      cause: 'La propiedad de ID del producto no tiene un formato válido, se recibió 6490ab6c8190cc908b.'
+                      message: 'El ID de producto proporcionado no es válido.'
+                      code: 10
+                  example3: 
+                    summary: 'CASO 3'
+                    value: 
+                      status: 'error'
+                      error: 'Error al intentar actualizar el producto en carrito'
+                      cause: 'No se proporcionó valor de quantity, para actualizar el producto en carrito. Se recibió undefined.'
+                      message: 'No se proporcionó ningún quantity para el producto en carrito.'
+                      code: 8
+        '401':
+          description: >
+            - 'ERROR: UNAUTHORIZED - CASO 1: No se cumplen los permisos requeridos para acceder a la ruta.'
+
+            - 'ERROR: UNAUTHORIZED - CASO 2: El ID del carrito no pertenece al usuario.'
+          content: 
+            application/json:
+              examples:
+                  example1:
+                    summary: 'CASO 1'
+                    value:
+                      error: 'No tienes acceso a esta ruta.'
+                  example2:
+                    summary: 'CASO 2'
+                    value:
+                      error: 'Solo puedes agregar, eliminar o actualizar productos en tu propio carrito. Lo mismo aplica al procesamiento de compras y la actualización del carrito.'
+        '404':
+          description: >
+            - 'ERROR: NOT FOUND - Carrito no encontrado.'
+            
+            -  'ERROR: NOT FOUND - Producto no encontrado en el carrito.'
+          content: 
+            application/json:
+              examples:
+                  example1:
+                    summary: 'CASO 1'
+                    value:
+                      statusCode: 404
+                      message: 'No se encontró ningún carrito con el ID 6509361bb8ab8df034f8c3db.'
+                  example2:
+                    summary: 'CASO 2'
+                    value:
+                      statusCode: 404
+                      message: 'No se encontró ningún producto con el ID 649c126df39eebcea4aa4698, en el carrito con el ID 65076f078c081e93102f4d5d.'
+        '409':
+          description: 'ERROR: CONFLICT - La información con la que se desea actualizar el carrito es igual a sus datos actuales:'
+          content: 
+            application/json:
+              example:
+                statusCode: 409
+                message: 'La actualización es igual a la versión actual de los datos del carrito con el ID 65076f078c081e93102f4d5d.'
+        '500':
+          description: 'ERROR: INTERNAL SERVER ERROR - Error al actualizar el producto en el carrito - Controller || Service || DAO: + error.message (Esto indica que ha ocurrido un error en la respectiva capa del módulo carts, al intentar actualizar el producto en el carrito):'
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: 'Error al actualizar el producto en el carrito - Controller: resultService is not defined'
+
 components:
   securitySchemes:
   # AUTH - SCHEMA:
     cookieAuth:      
       type: apiKey
       in: cookie
-      name: CoderCookie
+      name: CoderCookie123

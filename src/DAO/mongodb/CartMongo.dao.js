@@ -117,7 +117,9 @@ export default class CartsDAO {
             if (cart.result === undefined) {
                 response.status = "not found cart";
             } else {
-                cart.result.tickets.push({ ticketsRef: ticketID });
+                cart.result.tickets.push({
+                    ticketsRef: ticketID
+                });
                 await cart.result.save();
                 response.status = "success";
                 response.result = cart;
@@ -162,7 +164,7 @@ export default class CartsDAO {
             if (cart.result === null) {
                 response.status = "not found cart";
             } else if (cart.status === "success") {
-                if(cart.result.products.length === 0){
+                if (cart.result.products.length === 0) {
                     response.status = "not found prod";
                 } else {
                     cart.result.products = [];
@@ -182,18 +184,46 @@ export default class CartsDAO {
     async updateCart(cid, updatedCartFields) {
         let response = {};
         try {
-            let cart = await cartModel.updateOne({
-                _id: cid
-            }, {
-                $set: updatedCartFields
+            // Obtener el carrito actual:
+            const currentCart = await this.getCartById(cid);
+
+            // IDs de los productos en el carrito, actualmente:
+            const productIdsCart = currentCart.result.products.map((product) => product.product._id.toString());
+
+            // Extraemos los productos enviados para actualizar: 
+            const {
+                products: productsUp,
+                ...restOfCartFields
+            } = updatedCartFields;
+
+            // Verificamos si todos los productos enviados ya existen en el carrito y tienen la misma cantidad:
+            const allProductsExistWithSameQuantity = productsUp.every((productUp) => {
+                // Buscamos cada producto en el carrito:
+                const productIndex = productIdsCart.indexOf(productUp.product);
+                if (productIndex !== -1) {
+                    // Si el producto ya se encuentra en el carrito, entocnes comparamos su quantity actual con el nuevo:
+                    return currentCart.result.products[productIndex].quantity === productUp.quantity;
+                }
+                return false;
             });
-            if (result.matchedCount === 0) {
-                response.status = "not found cart";
-            } else if (result.matchedCount === 1) {
-                await cart.result.save();
-                response.status = "success";
-                response.result = cart;
-            };
+
+            // Si allProductsExistWithSameQuantity es true significa que los productos ya están en el carrito con la misma cantidad, no es necesario realizar la actualización. Si es false significa que hay productos diferentes o con diferente cantidad, por ende, se procede con la actualización:
+            if (allProductsExistWithSameQuantity) {
+                response.status = "update is equal to current";
+            } else {
+                const cart = await cartModel.updateOne({
+                    _id: cid
+                }, {
+                    $set: updatedCartFields
+                });
+                if (cart.matchedCount === 0) {
+                    response.status = "not found cart";
+                } else if (cart.matchedCount === 1) {
+                    response.status = "success";
+                    response.result = cart;
+                }
+            }
+
         } catch (error) {
             response.status = "error";
             response.message = "Error al actualizar el carrito - DAO: " + error.message;
@@ -213,15 +243,22 @@ export default class CartsDAO {
                 if (product === undefined) {
                     response.status = "not found product";
                 } else {
-                    product.quantity = quantity;
-                    await cart.result.save();
-                    response.status = "success";
-                    response.result = cart;
+                    if (product.quantity === quantity) {
+                        response.status = "update is equal to current";
+                    } else {
+                        product.quantity = quantity;
+                        await cart.result.save();
+                        response.status = "success";
+                        response.result = {
+                            productId: pid,
+                            newQuantity: product.quantity
+                        };
+                    };
                 };
             };
         } catch (error) {
             response.status = "error";
-            response.message = "Error al actualizar producto en carrito - DAO: " + error.message;
+            response.message = "Error al actualizar el producto en el carrito - DAO: " + error.message;
         };
         return response;
     };

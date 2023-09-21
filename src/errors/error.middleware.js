@@ -58,6 +58,16 @@ export const errorMiddleware = (error, req, res, next) => {
             });
             break;
 
+        case ErrorEnums.FORBIDDEN_UPDATED_CART_FIELDS:
+            res.status(400).send({
+                status: "error",
+                error: error.name,
+                cause: error.cause,
+                message: error.message,
+                code: ErrorEnums.FORBIDDEN_UPDATED_CART_FIELDS
+            });
+            break;
+
         case ErrorEnums.INVALID_UPDATED_CART_FIELDS:
             res.status(400).send({
                 status: "error",

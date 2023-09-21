@@ -52,7 +52,7 @@ paths:
                 error: 'Error al loguear el usuario.'
                 cause: 'Una o más propiedades en los datos del login están faltando o no son válidas.\n        Propiedades requeridas:\n        * email: Debe ser un correo electrónico válido, se recibió user@gmail.com.\n        * password: Se requiere una contraseña válida, puede ser un string, un número o una combinación de ambos.'
                 message: 'La información para el logueo está incompleta o no es válida.'
-                code: 16
+                code: 17
         '404':
           description: 'ERROR: NOT FOUND - No existe una cuenta asociada al correo indicado:'
           content: 
@@ -67,7 +67,7 @@ paths:
                 message: 'Existe una cuenta asociada a este correo pero, la contraseña ingresada es incorrecta.'
         '500':
           description: >
-            - 'ERROR: INTERNAL SERVER ERROR - CASO 1: Error al obtener el usuario - Controller || Service || DAO: + error.message (Esto indica que ha ocurrido un error en la respectiva capa del módulo session, al intentar obtener al usaurio).'
+            - 'ERROR: INTERNAL SERVER ERROR - CASO 1: Error al obtener el usuario - Controller || Service || DAO: + error.message (Esto indica que ha ocurrido un error en la respectiva capa del módulo session, al intentar obtener al usuario).'
             
             - 'ERROR: INTERNAL SERVER ERROR - CASO 2: Error de login en local.passport.js - Login: + error.message (Esto indica que ha ocurrido un error en la estrategia de autenticación login).'
           content:

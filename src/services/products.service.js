@@ -41,7 +41,7 @@ export default class ProductService {
                 response.message = resultDAO.message;
             } else if (resultDAO.status === "not found product") {
                 response.statusCode = 404;
-                response.message = `No se encontro ningún producto con el ID ${pid}.`;
+                response.message = `No se encontró ningún producto con el ID ${pid}.`;
             } else if (resultDAO.status === "success") {
                 response.statusCode = 200;
                 response.message = "Producto obtenido exitosamente.";
@@ -88,7 +88,7 @@ export default class ProductService {
                 response.message = productInfo.message;
             } else if (productInfo.status === "not found product") {
                 response.statusCode = 404;
-                response.message = `No se encontro ningún producto con el ID ${pid}.`;
+                response.message = `No se encontró ningún producto con el ID ${pid}.`;
             } else if (productInfo.status === "success") {
                 if (owner === "admin" || owner === undefined || productInfo.result.owner === owner) {
                     // Si el owner es admin o uindefined (Todos los productos antes de esta integración no tienen campo owner) puede eliminar cualquier producto. En el caso del user premium este solo puede eliminar los productos que le pertenezcan: 
@@ -100,6 +100,7 @@ export default class ProductService {
                         response.statusCode = 404;
                         response.message = `No se encontró ningún producto con el ID ${pid}.`;
                     } else if (resultDAO.status === "success") {
+                        
                         response.statusCode = 200;
                         response.message = "Producto eliminado exitosamente.";
                         response.result = resultDAO.result;
@@ -127,7 +128,7 @@ export default class ProductService {
                 response.message = productInfo.message;
             } else if (productInfo.status === "not found product") {
                 response.statusCode = 404;
-                response.message = `No se encontro ningún producto con el ID ${pid}.`;
+                response.message = `No se encontró ningún producto con el ID ${pid}.`;
             } else if (productInfo.status === "success") {
                 if (owner === "admin" || owner === undefined || productInfo.result.owner === owner) {
                     // Si el owner es admin o uindefined (Todos los productos antes de esta integración no tienen campo owner) puede actualizar cualquier producto. En el caso del user premium este solo puede actualizar los productos que le pertenezcan: 
@@ -138,6 +139,9 @@ export default class ProductService {
                     } else if (resultDAO.status === "not found product") {
                         response.statusCode = 404;
                         response.message = `No se encontró ningún producto con el ID ${pid}.`;
+                    } else if (resultDAO.status === "update is equal to current") {
+                        response.statusCode = 409;
+                        response.message = 'La actualización es igual a la versión actual de los datos del producto.'
                     } else if (resultDAO.status === "success") {
                         response.statusCode = 200;
                         response.message = "Producto actualizado exitosamente.";

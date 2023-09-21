@@ -181,7 +181,7 @@ export default class SessionService {
                 response.statusCode = 404;
                 response.message = `No se encontró ninguna cuenta asociada a este correo, ${userEmail}.`;
             } else if (resultDAO.status === "success") {
-                // Si el usaurio existe, verificamos si la nueva contraseña es igual a la actual: 
+                // Si el usuario existe, verificamos si la nueva contraseña es igual a la actual: 
                 const user = resultDAO.result
                 // Si es igual retronamos un error y pedimos una nueva contraseña:
                 if (isValidPassword(user, newPass)) {
@@ -228,7 +228,7 @@ export default class SessionService {
                 response.statusCode = 404;
                 response.message = `Usuario no encontrado.`;
             } else if (resultDAO.status === "success") {
-                // Si el usaurio existe, extraemos su rol actual: 
+                // Si el usuario existe, extraemos su rol actual: 
                 let userRole = resultDAO.result.role;
                 const newRole = userRole === "user" ? "premium" : "user";
                 const updateUser = {

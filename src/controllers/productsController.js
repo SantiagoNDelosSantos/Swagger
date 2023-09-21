@@ -215,7 +215,7 @@ export default class ProductController {
             response.message = resultService.message;
             if (resultService.statusCode === 500) {
                 req.logger.error(response.message);
-            } else if (resultService.statusCode === 404 || resultService.statusCode === 403) {
+            } else if (resultService.statusCode === 404 || resultService.statusCode === 403 || resultService.statusCode === 409) {
                 req.logger.warn(response.message);
             } else if (resultService.statusCode === 200) {
                 response.result = resultService.result;

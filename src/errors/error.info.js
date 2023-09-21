@@ -23,12 +23,20 @@ export default class ErrorGenerator {
         return `La dirección de correo electrónico proporcionada "${userEmail}" no es válida. Por favor, proporciona una dirección de correo electrónico válida.`;
     }
 
+    static generateUpdatedCartForbiddenErrorInfo(){
+        return `Esta ruta está diseñada exclusivamente para actualizar el contenido de un carrito al reemplazar los productos anteriores en él. No se aplica a los tickets, ya que, por cuestiones de seguridad, estos se agregan al carrito exclusivamente a través de la ruta de procesamiento de compra.`
+    }
+
     static generateUpdatedCartFieldsErrorInfo(updateCartFields) {
         return `No se proporcionó ningún cuerpo products[{product}] para actualizar el carrito. Se recibió ${updateCartFields}`
     }
 
+    static generateUpdatedCartFieldsErrorInfo2() {
+        return `Uno o más productos no cumplen con la información requerida en el cuerpo de la solicitud. Verifica que todos los productos tengan su respectivo ID y quantity.`
+    }
+
     static generateUpdatesProdInCartErrorInfo(quantity) {
-        return `No se proporcionó valor para actualizar el producto en carrito. Se recibió ${quantity}`
+        return `No se proporcionó valor de quantity, para actualizar el producto en carrito. Se recibió ${quantity}`
     }
 
     // Productos:

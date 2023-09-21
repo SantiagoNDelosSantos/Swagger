@@ -49,7 +49,7 @@ export default class CartService {
                 response.message = resultDAO.message;
             } else if (resultDAO.status === "not found cart") {
                 response.statusCode = 404;
-                response.message = `No se encontro ningún carrito con ID ${cid}.`;
+                response.message = `No se encontró ningún carrito con ID ${cid}.`;
             } else if (resultDAO.status === "success") {
                 response.statusCode = 200;
                 response.message = "Carrito obtenido exitosamente.";
@@ -102,7 +102,7 @@ export default class CartService {
                         response.message = resultDAO.message;
                     } else if (resultDAO.status === "not found cart") {
                         response.statusCode = 404;
-                        response.message = `No se encontro ningún carrito con ID ${cid}.`;
+                        response.message = `No se encontró ningún carrito con ID ${cid}.`;
                     } else if (resultDAO.status === "success") {
                         response.statusCode = 200;
                         response.message = "Producto agregado al carrito exitosamente.";
@@ -262,11 +262,10 @@ export default class CartService {
             } else if (resultDAO.status === "not found cart") {
                 response.statusCode = 404;
                 response.message = `No se encontró ningún carrito con el ID ${cid}.`;
-            } else if (resultDAO.status === "not found prod"){
+            } else if (resultDAO.status === "not found prod") {
                 response.statusCode = 404;
                 response.message = `No se encontraron productos en el carrito con el ID ${cid}.`;
-            } 
-            else if (resultDAO.status === "success") {
+            } else if (resultDAO.status === "success") {
                 response.statusCode = 200;
                 response.message = "Los productos del carrito se han eliminado exitosamente.";
                 response.result = resultDAO.result;
@@ -289,6 +288,9 @@ export default class CartService {
             } else if (resultDAO.status === "not found cart") {
                 response.statusCode = 404;
                 response.message = `No se encontró ningún carrito con el ID ${cid}.`;
+            } else if (resultDAO.status === "update is equal to current") {
+                response.statusCode = 409;
+                response.message = `La actualización es igual a la versión actual de los datos del carrito con el ID ${cid}.`;
             } else if (resultDAO.status === "success") {
                 response.statusCode = 200;
                 response.message = "Carrito actualizado exitosamente.";
@@ -315,6 +317,9 @@ export default class CartService {
             } else if (resultDAO.status === "not found product") {
                 response.statusCode = 404;
                 response.message = `No se encontró ningún producto con el ID ${pid}, en el carrito con el ID ${cid}.`;
+            } else if (resultDAO.status === "update is equal to current") {
+                response.statusCode = 409;
+                response.message = `La actualización es igual a la versión actual de los datos del carrito con el ID ${cid}.`;
             } else if (resultDAO.status === "success") {
                 response.statusCode = 200;
                 response.message = "Producto actualizado exitosamente.";
@@ -322,7 +327,7 @@ export default class CartService {
             };
         } catch (error) {
             response.statusCode = 500;
-            response.message = "Error al actualizar el producto - Service: " + error.message;
+            response.message = "Error al actualizar el producto en el carrito - Service: " + error.message;
         };
         return response;
     };
