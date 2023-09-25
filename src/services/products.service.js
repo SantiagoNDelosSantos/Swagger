@@ -90,7 +90,7 @@ export default class ProductService {
                 response.statusCode = 404;
                 response.message = `No se encontró ningún producto con el ID ${pid}.`;
             } else if (productInfo.status === "success") {
-                if (owner === "admin" || owner === undefined || productInfo.result.owner === owner) {
+                if (owner === "admin" || productInfo.result.owner === owner) {
                     // Si el owner es admin o uindefined (Todos los productos antes de esta integración no tienen campo owner) puede eliminar cualquier producto. En el caso del user premium este solo puede eliminar los productos que le pertenezcan: 
                     const resultDAO = await this.productDao.deleteProduct(pid);
                     if (resultDAO.status === "error") {
@@ -130,7 +130,7 @@ export default class ProductService {
                 response.statusCode = 404;
                 response.message = `No se encontró ningún producto con el ID ${pid}.`;
             } else if (productInfo.status === "success") {
-                if (owner === "admin" || owner === undefined || productInfo.result.owner === owner) {
+                if (owner === "admin" || productInfo.result.owner === owner) {
                     // Si el owner es admin o uindefined (Todos los productos antes de esta integración no tienen campo owner) puede actualizar cualquier producto. En el caso del user premium este solo puede actualizar los productos que le pertenezcan: 
                     const resultDAO = await this.productDao.updateProduct(pid, updateProduct);
                     if (resultDAO.status === "error") {

@@ -94,7 +94,7 @@ export default class CartService {
                 response.statusCode = product.statusCode;
                 response.message = product.message;
             } else {
-                if (product.result.owner === undefined || !product.result.owner === userId) {
+                if (product.result.owner === "admin" || !product.result.owner === userId) {
                     // Si el owner es undefined (Sigfinica que fue creado por un admin) o si el producto no pertenece al user, en ambos casos se puede agregar el producto al carrito: 
                     const resultDAO = await this.cartDao.addProductToCart(cid, product.result, quantity);
                     if (resultDAO.status === "error") {

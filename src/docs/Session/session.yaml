@@ -1,14 +1,3 @@
-# CREDENCIALES ADMIN: 
-# "email": "adminCoder@gmail.com", "password": "AdminCoder1234"
-
-# CREDENCIALES USER PREMIUM: 
-# "email": "premium@gmail.com", "password": "Premium1234"
-# cart: 65076e838c081e93102f4d52 (El usuario solo puede interactuar con su propio carrito).
-
-# CREDENCIALES: 
-# "email": "user@gmail.com", "password": "User1234"
-# cart: 65076f078c081e93102f4d5d (El usuario solo puede interactuar con su propio carrito).
-
 paths:
 
   '/api/sessions/login':
